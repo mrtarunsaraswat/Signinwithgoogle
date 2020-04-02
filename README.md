@@ -1,4 +1,4 @@
-# loginwithgoogle
+# Login with Google using Flutter
 
 A new Flutter application.
 
