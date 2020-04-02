@@ -16,7 +16,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _isLoggedIn = false;
 
-  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email','profile']);
+  GoogleSignInAccount _currentUser;
 
   _login() async{
     try{
@@ -50,15 +51,15 @@ class _MyAppState extends State<MyApp> {
                 ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image.network(_googleSignIn.currentUser.photoUrl, height: 90.0, width: 90.0,),
+                GoogleUserCircleAvatar(identity: _currentUser),
                 SizedBox(height: 10,),
-                Text(_googleSignIn.currentUser.displayName),
+                Text(_currentUser.displayName),
                 SizedBox(height: 10,),
-                Text(_googleSignIn.currentUser.email),
+                Text(_currentUser.email),
                 SizedBox(height: 10,),
-                Text(_googleSignIn.currentUser.id),
+                Text(_currentUser.id),
                 SizedBox(height: 10,),
-                Text(_googleSignIn.currentUser.hashCode.toString()),
+                Text(_currentUser.hashCode.toString()),
                 RaisedButton.icon(icon: Icon(Entypo.log_out),
                   label: Text("Logout"), onPressed: (){
                   _logout();
@@ -81,4 +82,16 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
+      setState(() {
+        _currentUser = account;
+      });
+    });
+    _googleSignIn.signInSilently();
+  }
+
 }
